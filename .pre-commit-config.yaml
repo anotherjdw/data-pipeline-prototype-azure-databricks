@@ -1,0 +1,15 @@
+repos:
+  # Python: Linting & Formatting
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.12  # Pin to a specific version
+    hooks:
+      - id: ruff
+        args: [--fix]         # Auto-fix safe violations
+      - id: ruff-format       # Replaces Black
+
+  # Terraform: Formatting
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.105.0  # Pin to a specific version
+    hooks:
+      - id: terraform_fmt       # Enforces canonical HCL formatting
+#      - id: terraform_tflint    # Catches provider-specific mistakes (e.g. invalid AWS resource args)

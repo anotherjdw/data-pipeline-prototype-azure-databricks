@@ -1,0 +1,17 @@
+orders_dataframe_name = "orders"
+raw_partition_key = "OrderDate"
+preprocessed_partition_key = "order_date"
+date_utc = "date_utc"
+
+cents_per_euro = 100
+subtotal = "subtotal"
+discount_total = "discount_total"
+shipping_total = "shipping_total"
+tax_total = "tax_total"
+grand_total = "grand_total"
+unit_price = "unit_price"
+order_id = "order_id"
+line_items = "LineItems"
+order_timestamp = "order_timestamp"
+price_eur = "price_eur"
+sku = "sku"

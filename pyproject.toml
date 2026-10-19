@@ -1,0 +1,16 @@
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes (undefined names, unused imports — critical for ETL)
+    "I",   # isort (import ordering)
+    "UP",  # pyupgrade (modernise syntax)
+]
+ignore = ["E501"]  # Optionally relax line-length if you enforce it via formatter only

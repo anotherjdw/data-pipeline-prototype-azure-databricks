@@ -1,0 +1,85 @@
+# Please see the README.md file in tables/ for instructions on how to configure this file.
+
+table:
+  description: One row per order line item, with the order's details repeated on each of its line items. Order-level amounts repeat per line item, so do not sum them across rows.
+  unique_key: [order_date, order_id, sku]
+
+  partition_keys:
+    - name: order_date
+      type: date
+      comment: Order date (in local time). One partition per day.
+
+  columns:
+    - name: date_utc
+      type: date
+      nullable: false
+      comment: Order date (UTC).
+    - name: order_id
+      type: string
+      nullable: false
+      comment: Unique identifier for the order. Used to look up a specific order and to link it to its line items.
+    - name: sku
+      type: string
+      nullable: false
+      comment: Stock keeping unit of the product on this line item. Used to link the line item to product information.
+    - name: product_name
+      type: string
+      nullable: false
+      comment: Product name as shown on the order, including variant details such as colour and size.
+    - name: quantity
+      type: bigint
+      nullable: false
+      comment: Number of units of the SKU ordered on this line item.
+    - name: price_eur
+      type: decimal(10,2)
+      nullable: false
+      comment: Price of one unit of the SKU on this order, in EUR, including VAT. Used as the base price per SKU; multiply by quantity for the line total.
+    - name: customer_id
+      type: string
+      nullable: false
+      comment: Identifies the customer who placed the order. Used to count repeat purchases and analyse customer behaviour.
+    - name: order_timestamp
+      type: timestamp
+      nullable: false
+      comment: Exact time the order was placed, in UTC. Used to analyse what times of day and days of the week people buy.
+    - name: status
+      type: string
+      nullable: false
+      comment: Where the order is in its lifecycle (pending, paid, shipped, delivered, cancelled, refunded). Used to separate completed sales from cancelled or refunded ones.
+    - name: channel
+      type: string
+      nullable: false
+      comment: Where the customer placed the order (web or mobile_app). Used to compare sales across channels.
+    - name: currency
+      type: string
+      nullable: false
+      comment: Currency of all amounts on the order, as an ISO 4217 code (e.g. EUR). Tells readers which currency the amount columns are in.
+    - name: subtotal_eur
+      type: decimal(10,2)
+      nullable: false
+      comment: Total price of all items in the order before discounts and shipping, including VAT. Shows how much product value customers bought.
+    - name: discount_total_eur
+      type: decimal(10,2)
+      nullable: false
+      comment: Total discount applied to the order, 0 if none. Used to measure what promotions and vouchers cost the business.
+    - name: shipping_total_eur
+      type: decimal(10,2)
+      nullable: false
+      comment: Shipping fee charged to the customer, 0 if shipping was free. Used to track shipping revenue and the effect of free-shipping offers.
+    - name: tax_total_eur
+      type: decimal(10,2)
+      nullable: false
+      comment: VAT portion of the order, already included in subtotal. Used for tax reporting and to calculate revenue excluding VAT.
+    - name: grand_total_eur
+      type: decimal(10,2)
+      nullable: false
+      comment: Amount the customer paid (subtotal minus discount_total plus shipping_total). The main figure for revenue reporting.
+    - name: payment_method
+      type: string
+      nullable: true
+      comment: How the customer paid (card, paypal, klarna). Empty for pending orders not yet paid. Used to see which payment options customers prefer.
+    - name: shipping_country
+      type: string
+      nullable: false
+      comment: Country the order ships to, as an ISO 3166-1 alpha-2 code (e.g. DE). Used to break down sales by market and plan logistics.
+

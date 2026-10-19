@@ -1,0 +1,285 @@
+[
+  {
+    "OrderId": "ORD-100240",
+    "CustomerId": "CUS-90517",
+    "OrderTimestamp": "2026-01-01T00:30:00+01:00",
+    "Status": "paid",
+    "Channel": "mobile_app",
+    "Currency": "EUR",
+    "Subtotal": 3998,
+    "DiscountTotal": 0,
+    "ShippingTotal": 495,
+    "TaxTotal": 638,
+    "GrandTotal": 4493,
+    "PaymentMethod": "card",
+    "ShippingCountry": "DE",
+    "LineItems": [
+      {
+        "Sku": "CAP-NVY",
+        "ProductName": "Baseball Cap, Navy",
+        "Quantity": 2,
+        "UnitPrice": 1999
+      }
+    ]
+  },
+  {
+    "OrderId": "ORD-100241",
+    "CustomerId": "CUS-48213",
+    "OrderTimestamp": "2026-01-01T08:14:52+01:00",
+    "Status": "paid",
+    "Channel": "web",
+    "Currency": "EUR",
+    "Subtotal": 8997,
+    "DiscountTotal": 900,
+    "ShippingTotal": 0,
+    "TaxTotal": 1436,
+    "GrandTotal": 8097,
+    "PaymentMethod": "card",
+    "ShippingCountry": "DE",
+    "LineItems": [
+      {
+        "Sku": "TSH-BLK-M",
+        "ProductName": "Basic T-Shirt, Black, M",
+        "Quantity": 3,
+        "UnitPrice": 2999
+      }
+    ]
+  },
+  {
+    "OrderId": "ORD-100242",
+    "CustomerId": "CUS-51077",
+    "OrderTimestamp": "2026-01-01T09:41:03+01:00",
+    "Status": "shipped",
+    "Channel": "mobile_app",
+    "Currency": "EUR",
+    "Subtotal": 7998,
+    "DiscountTotal": 0,
+    "ShippingTotal": 0,
+    "TaxTotal": 1277,
+    "GrandTotal": 7998,
+    "PaymentMethod": "paypal",
+    "ShippingCountry": "DE",
+    "LineItems": [
+      {
+        "Sku": "HOD-GRY-M",
+        "ProductName": "Hoodie, Grey, M",
+        "Quantity": 1,
+        "UnitPrice": 5999
+      },
+      {
+        "Sku": "CAP-NVY",
+        "ProductName": "Baseball Cap, Navy",
+        "Quantity": 1,
+        "UnitPrice": 1999
+      }
+    ]
+  },
+  {
+    "OrderId": "ORD-100243",
+    "CustomerId": "CUS-30982",
+    "OrderTimestamp": "2026-01-01T10:02:37+01:00",
+    "Status": "paid",
+    "Channel": "web",
+    "Currency": "EUR",
+    "Subtotal": 2598,
+    "DiscountTotal": 0,
+    "ShippingTotal": 495,
+    "TaxTotal": 415,
+    "GrandTotal": 3093,
+    "PaymentMethod": "klarna",
+    "ShippingCountry": "AT",
+    "LineItems": [
+      {
+        "Sku": "SCK-MIX-3",
+        "ProductName": "Socks 3-Pack",
+        "Quantity": 2,
+        "UnitPrice": 1299
+      }
+    ]
+  },
+  {
+    "OrderId": "ORD-100244",
+    "CustomerId": "CUS-48213",
+    "OrderTimestamp": "2026-01-01T11:26:15+01:00",
+    "Status": "cancelled",
+    "Channel": "web",
+    "Currency": "EUR",
+    "Subtotal": 7999,
+    "DiscountTotal": 0,
+    "ShippingTotal": 0,
+    "TaxTotal": 1277,
+    "GrandTotal": 7999,
+    "PaymentMethod": "card",
+    "ShippingCountry": "DE",
+    "LineItems": [
+      {
+        "Sku": "JNS-IND-32",
+        "ProductName": "Slim Jeans, Indigo, 32",
+        "Quantity": 1,
+        "UnitPrice": 7999
+      }
+    ]
+  },
+  {
+    "OrderId": "ORD-100245",
+    "CustomerId": "CUS-66410",
+    "OrderTimestamp": "2026-01-01T12:58:40+01:00",
+    "Status": "paid",
+    "Channel": "mobile_app",
+    "Currency": "EUR",
+    "Subtotal": 8298,
+    "DiscountTotal": 1245,
+    "ShippingTotal": 0,
+    "TaxTotal": 1325,
+    "GrandTotal": 7053,
+    "PaymentMethod": "card",
+    "ShippingCountry": "NL",
+    "LineItems": [
+      {
+        "Sku": "SNK-WHT-42",
+        "ProductName": "Canvas Sneakers, White, 42",
+        "Quantity": 1,
+        "UnitPrice": 6999
+      },
+      {
+        "Sku": "SCK-MIX-3",
+        "ProductName": "Socks 3-Pack",
+        "Quantity": 1,
+        "UnitPrice": 1299
+      }
+    ]
+  },
+  {
+    "OrderId": "ORD-100246",
+    "CustomerId": "CUS-12874",
+    "OrderTimestamp": "2026-01-01T14:33:09+01:00",
+    "Status": "pending",
+    "Channel": "web",
+    "Currency": "EUR",
+    "Subtotal": 1499,
+    "DiscountTotal": 0,
+    "ShippingTotal": 495,
+    "TaxTotal": 239,
+    "GrandTotal": 1994,
+    "PaymentMethod": null,
+    "ShippingCountry": "DE",
+    "LineItems": [
+      {
+        "Sku": "BAG-TOTE",
+        "ProductName": "Canvas Tote Bag",
+        "Quantity": 1,
+        "UnitPrice": 1499
+      }
+    ]
+  },
+  {
+    "OrderId": "ORD-100247",
+    "CustomerId": "CUS-70315",
+    "OrderTimestamp": "2026-01-01T16:07:21+01:00",
+    "Status": "shipped",
+    "Channel": "web",
+    "Currency": "EUR",
+    "Subtotal": 13997,
+    "DiscountTotal": 0,
+    "ShippingTotal": 0,
+    "TaxTotal": 2235,
+    "GrandTotal": 13997,
+    "PaymentMethod": "paypal",
+    "ShippingCountry": "FR",
+    "LineItems": [
+      {
+        "Sku": "TSH-WHT-L",
+        "ProductName": "Basic T-Shirt, White, L",
+        "Quantity": 2,
+        "UnitPrice": 2999
+      },
+      {
+        "Sku": "JNS-IND-32",
+        "ProductName": "Slim Jeans, Indigo, 32",
+        "Quantity": 1,
+        "UnitPrice": 7999
+      }
+    ]
+  },
+  {
+    "OrderId": "ORD-100248",
+    "CustomerId": "CUS-25561",
+    "OrderTimestamp": "2026-01-01T18:45:58+01:00",
+    "Status": "refunded",
+    "Channel": "mobile_app",
+    "Currency": "EUR",
+    "Subtotal": 1999,
+    "DiscountTotal": 0,
+    "ShippingTotal": 495,
+    "TaxTotal": 319,
+    "GrandTotal": 2494,
+    "PaymentMethod": "klarna",
+    "ShippingCountry": "DE",
+    "LineItems": [
+      {
+        "Sku": "CAP-NVY",
+        "ProductName": "Baseball Cap, Navy",
+        "Quantity": 1,
+        "UnitPrice": 1999
+      }
+    ]
+  },
+  {
+    "OrderId": "ORD-100249",
+    "CustomerId": "CUS-39940",
+    "OrderTimestamp": "2026-01-01T20:19:34+01:00",
+    "Status": "paid",
+    "Channel": "web",
+    "Currency": "EUR",
+    "Subtotal": 11998,
+    "DiscountTotal": 1200,
+    "ShippingTotal": 0,
+    "TaxTotal": 1916,
+    "GrandTotal": 10798,
+    "PaymentMethod": "card",
+    "ShippingCountry": "AT",
+    "LineItems": [
+      {
+        "Sku": "HOD-GRY-M",
+        "ProductName": "Hoodie, Grey, M",
+        "Quantity": 2,
+        "UnitPrice": 5999
+      }
+    ]
+  },
+  {
+    "OrderId": "ORD-100250",
+    "CustomerId": "CUS-81236",
+    "OrderTimestamp": "2026-01-01T22:51:07+01:00",
+    "Status": "paid",
+    "Channel": "mobile_app",
+    "Currency": "EUR",
+    "Subtotal": 5797,
+    "DiscountTotal": 0,
+    "ShippingTotal": 495,
+    "TaxTotal": 926,
+    "GrandTotal": 6292,
+    "PaymentMethod": "paypal",
+    "ShippingCountry": "DE",
+    "LineItems": [
+      {
+        "Sku": "TSH-BLK-M",
+        "ProductName": "Basic T-Shirt, Black, M",
+        "Quantity": 1,
+        "UnitPrice": 2999
+      },
+      {
+        "Sku": "SCK-MIX-3",
+        "ProductName": "Socks 3-Pack",
+        "Quantity": 1,
+        "UnitPrice": 1299
+      },
+      {
+        "Sku": "BAG-TOTE",
+        "ProductName": "Canvas Tote Bag",
+        "Quantity": 1,
+        "UnitPrice": 1499
+      }
+    ]
+  }
+]

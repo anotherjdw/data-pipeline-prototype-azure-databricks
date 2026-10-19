@@ -1,0 +1,15 @@
+# Please see the README.md documentation in this directory for instructions on how to configure this file.
+
+job:
+  cluster:
+    node_type_id: Standard_D4ds_v5
+    num_workers: 1
+  paths:
+    ORDERS_INPUT_PATH: { layer: raw, dataset: orders }
+  tables:
+    OUTPUT_TABLE: { layer: preprocessed, dataset: customer_tracking, table: orders}
+  arguments:
+    ORDERS_PARTITION_KEY: OrderDate
+    PROCESSING_TYPE: backfill
+    START_DATE: "2026-01-01"
+    END_DATE: "2026-01-01"
