@@ -1,1 +1,7 @@
 .idea
+*.tfstate
+*.tfstate.*
+.terraform/
+
+dist/
+*.egg-info/

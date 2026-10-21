@@ -14,3 +14,16 @@ select = [
     "UP",  # pyupgrade (modernise syntax)
 ]
 ignore = ["E501"]  # Optionally relax line-length if you enforce it via formatter only
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "data-pipeline-prototype"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]

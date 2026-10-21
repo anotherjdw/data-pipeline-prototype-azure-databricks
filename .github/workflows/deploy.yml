@@ -1,0 +1,270 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+permissions:
+  id-token: write # this is required for OIDC
+  contents: read
+
+env:
+  TF_VERSION: "1.10.0"
+  WORKING_DIR: "./infra/terraform"
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_USE_OIDC: true
+  TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+# NOTE: for steps 1-5 can be extracted into a reusable composite action to avoid repetition
+
+jobs:
+  setup-and-validate:
+    name: Setup and Validate Terraform Deployment
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
+
+    steps:
+      # 1: checkout code
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 2: Install defined terraform version
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      # 3: Cache pre-commit environments
+      - name: Cache pre-commit environments
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+          restore-keys: |
+            pre-commit-
+
+      # 5: Initialize terraform
+      #NOTE: key is defined in backend.tf file, not needed until there is a dev environment
+      - name: Terraform Init
+        id: init
+        run: |
+          terraform init \
+            -backend=false
+
+      # 6: setup python version
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 7: install pre-commit
+      - name: Install pre-commit
+        run: pip install pre-commit
+        working-directory: ${{ github.workspace }}
+
+      # 8: run pre-commit on all files
+      - name: Run pre-commit hooks
+        run: pre-commit run --all-files
+        working-directory: ${{ github.workspace }}
+
+
+  run-tests:
+    name: Run Unit and Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1: Checkout code
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 2: Set up Java
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # 3: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 4: Install dependencies
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # 5: Run unit tests
+      - name: Run unit tests
+        run: pytest tests/unit
+
+      # 6: Run integration tests
+      - name: Run integration tests
+        run: pytest tests/integration
+
+      # 7: Run end-to-end tests
+      - name: Run end-to-end tests
+        run: pytest tests/end_to_end
+
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    needs: [setup-and-validate, run-tests]
+
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
+
+    steps:
+      # 1: checkout code
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 2: Configure Azure credentials
+      - name: Configure Azure Credentials
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # 3: Install defined terraform version
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      # 4: Initiate Terraform
+      - name: Terraform Init
+        run: |
+          terraform init
+
+      # 5: Execute Terraform Plan
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      # 6: Upload plan artifact for apply job
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.WORKING_DIR }}/tfplan
+
+  terraform-apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    needs: terraform-plan
+    environment: prod
+
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
+
+    steps:
+      # 1: checkout code
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 2: Configure Azure credentials
+      - name: Configure Azure Credentials
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # 3: Install defined terraform version
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+
+      # 4: Initiate Terraform
+      - name: Terraform Init
+        run: |
+          terraform init
+
+      # 5: Download plan artifact from plan job
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.WORKING_DIR }}
+
+      # 6: Apply Terraform
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+
+      # 7: Export terraform outputs
+      - name: Export terraform outputs
+        id: tf
+        run: |
+          echo "jobs=$(terraform output -json job_names | jq -c '.')" >> "$GITHUB_OUTPUT"
+          echo "code_volume_path=$(terraform output -raw code_volume_path)" >> "$GITHUB_OUTPUT"
+          echo "workspace_url=$(terraform output -raw workspace_url)" >> "$GITHUB_OUTPUT"
+
+    outputs:
+      jobs: ${{ steps.tf.outputs.jobs }}
+      code_volume_path: ${{ steps.tf.outputs.code_volume_path }}
+      workspace_url: ${{ steps.tf.outputs.workspace_url }}
+
+  deploy-code:
+    name: Deploy Glue Scripts to S3
+    runs-on: ubuntu-latest
+    needs: terraform-apply
+
+    steps:
+      # 1: Checkout code
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 2: Configure Azure credentials
+      - name: Configure Azure Credentials
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # 3: setup python version
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 4 Build package wheel (written to dist/)
+      - name: Build wheel
+        run: |
+          pip install build
+          python -m build --wheel
+          ls dist
+
+      # 5: Install Databricks CLI
+      - name: Set up Databricks CLI
+        uses: databricks/setup-cli@main
+
+      # 6: Upload wheel and each job's entry scripts to the code volume
+      - name: Upload wheel and job scripts
+        env:
+          JOBS: ${{ needs.terraform-apply.outputs.jobs }}
+          CODE_VOLUME: ${{ needs.terraform-apply.outputs.code_volume_path }}
+          DATABRICKS_HOST: ${{ needs.terraform-apply.outputs.workspace_url }}
+          DATABRICKS_AUTH_TYPE: azure-cli
+        run: |
+          databricks fs cp dist/*.whl "dbfs:${CODE_VOLUME}/" --overwrite
+          for job in $(echo "$JOBS" | jq -r 'keys[]'); do
+            databricks fs mkdir "dbfs:${CODE_VOLUME}/jobs/${job}"
+            databricks fs cp "src/data_pipeline_prototype/jobs/${job}/job.py" \
+              "dbfs:${CODE_VOLUME}/jobs/${job}/job.py" --overwrite
+          done
