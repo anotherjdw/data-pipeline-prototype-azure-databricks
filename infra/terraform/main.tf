@@ -39,7 +39,7 @@ locals {
       cluster = job.cluster
       arguments = merge(
         job.arguments,
-        { for arg, p in try(job.paths, {}) : arg => "${module.storage.container_urls[p.layer]}/${p.dataset}/" },
+        { for arg, p in try(job.paths, {}) : arg => "${module.storage.container_urls[p.layer]}${p.dataset}/" },
         { for arg, t in try(job.tables, {}) : arg => module.catalog.table_names["${t.layer}/${t.dataset}/${t.table}"] }
       )
     }

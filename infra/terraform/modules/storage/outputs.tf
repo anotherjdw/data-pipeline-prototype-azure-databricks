@@ -9,6 +9,8 @@ output "storage_account_name" {
 }
 
 output "container_urls" {
-  description = "abfss:// URL of each container, keyed by medallion layer."
-  value       = { for k, v in azurerm_storage_container.medallion_containers : k => "abfss://${v.name}@${azurerm_storage_account.medallion_storage.primary_dfs_host}" }
+  # Ends with "/" because Databricks stores external location URLs with one; without it the
+  # catalogs' storage_root changes during apply and Terraform stops with an inconsistent plan.
+  description = "abfss:// URL of each container, keyed by medallion layer, ending in /."
+  value       = { for k, v in azurerm_storage_container.medallion_containers : k => "abfss://${v.name}@${azurerm_storage_account.medallion_storage.primary_dfs_host}/" }
 }
