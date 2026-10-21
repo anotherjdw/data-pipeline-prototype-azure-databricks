@@ -35,12 +35,24 @@ resource "databricks_job" "etl_jobs" {
       # Unity Catalog needs an access mode. Standard (shared) mode works for this job, since
       # no code uses spark._jsc / spark._jvm.
       data_security_mode = "USER_ISOLATION"
-      custom_tags        = local.common_tags
 
-      spark_conf = {
-        # transform derives date_utc with to_date(), which uses the session time zone.
-        "spark.sql.session.timeZone" = "UTC"
-      }
+      # num_workers = 0 makes a single-node cluster: the driver runs Spark locally. Databricks
+      # needs the singleNode profile, a local master and the SingleNode tag to accept it.
+      custom_tags = merge(
+        local.common_tags,
+        each.value.cluster.num_workers == 0 ? { "ResourceClass" = "SingleNode" } : {}
+      )
+
+      spark_conf = merge(
+        {
+          # transform derives date_utc with to_date(), which uses the session time zone.
+          "spark.sql.session.timeZone" = "UTC"
+        },
+        each.value.cluster.num_workers == 0 ? {
+          "spark.databricks.cluster.profile" = "singleNode"
+          "spark.master"                     = "local[*]"
+        } : {}
+      )
     }
 
     # Runs the job's entry script; the deploy workflow uploads it as <volume>/jobs/<job>/job.py.

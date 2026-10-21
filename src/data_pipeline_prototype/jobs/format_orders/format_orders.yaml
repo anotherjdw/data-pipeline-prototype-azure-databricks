@@ -3,7 +3,7 @@
 job:
   cluster:
     node_type_id: Standard_D4ds_v5
-    num_workers: 1
+    num_workers: 0 # single node: the Azure Free Trial allows only 4 vCPUs per region
   paths:
     ORDERS_INPUT_PATH: { layer: raw, dataset: orders }
   tables:
