@@ -19,6 +19,11 @@ variable "jobs" {
   }))
 }
 
+variable "single_user_name" {
+  description = "User name (application ID for a service principal) the job clusters are assigned to in dedicated access mode. Must be the identity the jobs run as."
+  type        = string
+}
+
 variable "code_volume_path" {
   description = "Path of the Volume that holds the wheel and job entry scripts, e.g. /Volumes/artifacts/<schema>/code."
   type        = string

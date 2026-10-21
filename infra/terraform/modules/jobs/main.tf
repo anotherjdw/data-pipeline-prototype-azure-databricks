@@ -32,9 +32,10 @@ resource "databricks_job" "etl_jobs" {
       spark_version = var.spark_version
       node_type_id  = each.value.cluster.node_type_id
       num_workers   = each.value.cluster.num_workers
-      # Unity Catalog needs an access mode. Standard (shared) mode works for this job, since
-      # no code uses spark._jsc / spark._jvm.
-      data_security_mode = "USER_ISOLATION"
+      # Unity Catalog needs an access mode. Dedicated mode, assigned to the identity the job runs
+      # as: in Standard mode the isolated Python sandbox could not read job.py from the volume.
+      data_security_mode = "SINGLE_USER"
+      single_user_name   = var.single_user_name
       custom_tags        = local.common_tags
 
       spark_conf = {

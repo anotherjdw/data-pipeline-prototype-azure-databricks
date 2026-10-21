@@ -94,11 +94,16 @@ module "catalog" {
   storage_roots = module.access.external_location_urls
 }
 
+# The identity Terraform signs in to Databricks with (the GitHub OIDC service principal in CI).
+# Jobs have no run_as, so they run as this identity.
+data "databricks_current_user" "deployer" {}
+
 module "jobs" {
   source           = "./modules/jobs"
   project          = var.project
   environment      = var.environment
   jobs             = local.jobs
+  single_user_name = data.databricks_current_user.deployer.user_name
   code_volume_path = module.catalog.code_volume_path # replaces scripts_bucket_name
   wheel_file_name  = var.wheel_file_name
   scheduled_triggers = {
