@@ -44,7 +44,15 @@ resource "azurerm_role_assignment" "unity_catalog_storage" {
   principal_id         = azurerm_databricks_access_connector.unity_catalog.identity[0].principal_id
 }
 
-# 3. Register the Access Connector in Unity Catalog as a storage credential.
+# 3. Let the Access Connector's managed identity read the Access Connector resource itself.
+#    Unity Catalog checks for this Reader role when the storage credential is registered.
+resource "azurerm_role_assignment" "unity_catalog_self_reader" {
+  scope                = azurerm_databricks_access_connector.unity_catalog.id
+  role_definition_name = "Reader"
+  principal_id         = azurerm_databricks_access_connector.unity_catalog.identity[0].principal_id
+}
+
+# 4. Register the Access Connector in Unity Catalog as a storage credential.
 resource "databricks_storage_credential" "unity_catalog" {
   name    = "${local.uc_prefix}_storage"
   comment = "Access Connector of ${local.project_environment}. Managed by Terraform."
@@ -53,11 +61,14 @@ resource "databricks_storage_credential" "unity_catalog" {
     access_connector_id = azurerm_databricks_access_connector.unity_catalog.id
   }
 
-  # The role must exist before Unity Catalog uses the credential.
-  depends_on = [azurerm_role_assignment.unity_catalog_storage]
+  # Both roles must exist before Unity Catalog registers and uses the credential.
+  depends_on = [
+    azurerm_role_assignment.unity_catalog_storage,
+    azurerm_role_assignment.unity_catalog_self_reader,
+  ]
 }
 
-# 4. One external location per container: Unity Catalog only reads or writes abfss:// paths
+# 5. One external location per container: Unity Catalog only reads or writes abfss:// paths
 #    that an external location covers. raw is read as files by the jobs; the others are the
 #    managed storage of the catalogs created in the catalog module.
 resource "databricks_external_location" "containers" {

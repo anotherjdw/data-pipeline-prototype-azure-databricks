@@ -220,7 +220,7 @@ jobs:
       workspace_url: ${{ steps.tf.outputs.workspace_url }}
 
   deploy-code:
-    name: Deploy Glue Scripts to S3
+    name: Deploy code to Databricks
     runs-on: ubuntu-latest
     needs: terraform-apply
 

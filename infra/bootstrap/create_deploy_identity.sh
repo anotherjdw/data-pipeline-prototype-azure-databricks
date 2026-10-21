@@ -67,8 +67,8 @@ add_federated_credential() {
   fi
 }
 
-add_federated_credential "github-main" "repo:${GITHUB_REPO}:ref:refs/heads/main"          # plan job
-add_federated_credential "github-env-prod" "repo:${GITHUB_REPO}:environment:prod"         # apply job
+add_federated_credential "github-main" "repo:anotherjdw@82816504/data-pipeline-prototype-azure-databricks@1420735755:ref:refs/heads/main"   # plan job
+add_federated_credential "github-env-prod" "repo:anotherjdw@82816504/data-pipeline-prototype-azure-databricks@1420735755:environment:prod"  # apply job
 
 # 5. Values for the GitHub repository secrets
 echo
