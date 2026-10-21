@@ -47,7 +47,7 @@ resource "databricks_job" "etl_jobs" {
     # Runs the job's entry script; the deploy workflow uploads it as <volume>/jobs/<job>/job.py.
     # Each YAML argument KEY: value becomes --KEY value on the command line argparse reads.
     spark_python_task {
-      python_file = "${var.code_volume_path}/jobs/${each.key}/job.py"
+      python_file = "dbfs:${var.code_volume_path}/jobs/${each.key}/job.py"
       parameters  = flatten([for arg, value in each.value.arguments : ["--${arg}", value]])
     }
 
