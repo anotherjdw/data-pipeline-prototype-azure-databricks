@@ -34,3 +34,9 @@ variable "schedules_paused" {
   type        = bool
   default     = true
 }
+
+variable "data_writers" {
+  description = "Users (e-mail) or groups (name) that receive read and write access to the pipeline's catalog. The deploying identity owns the catalog automatically has access."
+  type        = set(string)
+  default     = []
+}

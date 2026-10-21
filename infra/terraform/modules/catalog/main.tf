@@ -28,6 +28,18 @@ resource "databricks_catalog" "layers" {
   comment      = "${title(each.key)} layer of ${var.project}. Managed by Terraform."
 }
 
+# This grants people access to the data.
+resource "databricks_grant" "layers" {
+  for_each = {
+    for pair in setproduct(local.layers, var.data_writers) : "${pair[0]} ${pair[1]}" => { catalog = pair[0], principal = pair[1] }
+  }
+
+  catalog    = databricks_catalog.layers[each.value.catalog].name
+  principal  = each.value.principal
+  privileges = ["USE_CATALOG", "USE_SCHEMA", "BROWSE", "SELECT", "MODIFY", "CREATE_SCHEMA", "CREATE_TABLE"]
+}
+
+
 resource "databricks_schema" "datasets" {
   for_each = local.schemas
 
@@ -102,4 +114,13 @@ resource "databricks_volume" "code" {
   name         = "code"
   volume_type  = "MANAGED"
   comment      = "Python wheel and job entry scripts, uploaded by the deploy workflow."
+}
+
+
+resource "databricks_grant" "artifacts" {
+  for_each = var.data_writers
+
+  catalog    = databricks_catalog.artifacts.name
+  principal  = each.value
+  privileges = ["USE_CATALOG", "USE_SCHEMA", "BROWSE", "READ_VOLUME", "WRITE_VOLUME"]
 }

@@ -92,6 +92,7 @@ module "catalog" {
   tables      = local.tables
   # The external locations' URLs, so the catalogs are created after Unity Catalog may use the containers.
   storage_roots = module.access.external_location_urls
+  data_writers  = var.data_writers
 }
 
 # The identity Terraform signs in to Databricks with (the GitHub OIDC service principal in CI).

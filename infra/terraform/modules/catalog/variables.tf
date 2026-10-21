@@ -17,3 +17,9 @@ variable "storage_roots" {
   description = "abfss:// URL of each layer's external location, keyed by layer. Used as the catalogs' managed storage."
   type        = map(string)
 }
+
+variable "data_writers" {
+  description = "Users (e-mail) or groups (name) that receive read and write access to the pipeline's catalog. The deploying identity owns the catalog automatically has access."
+  type        = set(string)
+  default     = []
+}
