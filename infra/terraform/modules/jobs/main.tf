@@ -23,6 +23,18 @@ resource "databricks_job" "etl_jobs" {
   max_concurrent_runs = 2
   tags                = local.common_tags
 
+  # Fails a run that takes longer, including one stuck waiting for a cluster
+  timeout_seconds = var.timeout_seconds
+
+  # Failed or timed out runs send an e-mail
+  dynamic "email_notifications" {
+    for_each = length(var.notification_emails) > 0 ? [var.notification_emails] : []
+    content {
+      on_failure                = email_notifications.value
+      no_alert_for_skipped_runs = true
+    }
+  }
+
   task {
     task_key    = each.key
     max_retries = 0

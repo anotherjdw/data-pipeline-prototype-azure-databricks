@@ -40,3 +40,9 @@ variable "data_writers" {
   type        = set(string)
   default     = []
 }
+
+variable "notification_emails" {
+  description = "E-mail addresses notified when a job fails or times out."
+  type        = list(string)
+  default     = []
+}

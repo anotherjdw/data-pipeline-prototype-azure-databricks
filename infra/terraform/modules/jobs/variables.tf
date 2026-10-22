@@ -51,3 +51,15 @@ variable "schedules_paused" {
   type        = bool
   default     = true
 }
+
+variable "timeout_seconds" {
+  description = "Maximum runtime of a job in seconds, including cluster startup. Longer runs fail as timed out."
+  type        = number
+  default     = 1800
+}
+
+variable "notification_emails" {
+  description = "E-mail addresses notified when a job fails or times out."
+  type        = list(string)
+  default     = []
+}

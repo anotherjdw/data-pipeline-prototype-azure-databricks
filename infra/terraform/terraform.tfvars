@@ -7,6 +7,7 @@ container_names = {
   processed    = "processed"
   artifacts    = "artifacts"
 }
-wheel_file_name  = "data_pipeline_prototype-0.1.0-py3-none-any.whl"
-schedules_paused = true # format_orders runs a fixed backfill for now; unpause once it uses lookback
-data_writers     = ["jdh686@outlook.com"]
+wheel_file_name     = "data_pipeline_prototype-0.1.0-py3-none-any.whl"
+schedules_paused    = true # format_orders runs a fixed backfill for now; unpause once it uses lookback
+data_writers        = ["jdh686@outlook.com"]
+notification_emails = ["jdh686@outlook.com"]

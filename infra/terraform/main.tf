@@ -110,5 +110,6 @@ module "jobs" {
   scheduled_triggers = {
     format_orders = "0 10 15 * * ?" # Quartz syntax, UTC: 15:10 daily
   }
-  schedules_paused = var.schedules_paused
+  schedules_paused    = var.schedules_paused
+  notification_emails = var.notification_emails
 }
